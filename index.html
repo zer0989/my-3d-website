@@ -3,1142 +3,1678 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المنهاج السني - الموسوعة الإسلامية والمنافسة المنهجية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Amiri:wght@600;700&display=swap" rel="stylesheet">
+    <title>منصة المنهاج - الموسوعة الإسلامية الشاملة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-deep: #040710;
-            --bg-card: #0a0f1d;
-            --bg-card-hover: #10182d;
-            --accent-gold: #d4af37;
-            --accent-cyan: #38bdf8;
-            --accent-glow: rgba(56, 189, 248, 0.15);
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border-card: rgba(148, 163, 184, 0.08);
-            --border-glow: rgba(212, 175, 55, 0.25);
+            --bg-base: #020617;
+            --bg-surface: #0f172a;
+            --bg-surface-hover: #1e293b;
+            --primary-glow: #38bdf8;
+            --primary-dark: #0284c7;
+            --accent-gold: #fbbf24;
+            --accent-gold-glow: rgba(251, 191, 36, 0.2);
+            --text-title: #f8fafc;
+            --text-body: #cbd5e1;
+            --text-muted: #64748b;
+            --border-light: rgba(255, 255, 255, 0.05);
+            --border-focus: rgba(56, 189, 248, 0.4);
+            --success: #10b981;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Cairo', sans-serif;
+            box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-body);
+            line-height: 1.7;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* خلفية جزيئات الغبار الناعم (Canvas) */
-        #dustCanvas {
+        body::before {
+            content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.04), transparent 40%),
+                        radial-gradient(circle at 85% 10%, rgba(251, 191, 36, 0.03), transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* شريط التمرير المخصص */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-surface-hover); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+
+        /* Canvas الجزيئات */
+        #particleCanvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 1;
         }
 
-        /* الهيدر السينمائي الفاخر */
-        header {
-            text-align: center;
-            padding: 60px 20px 30px;
-            position: relative;
-            z-index: 2;
-            background: linear-gradient(to bottom, rgba(4,7,16,0.9), transparent);
-        }
-
-        header .logo-badge {
-            display: inline-block;
-            padding: 6px 18px;
-            background: rgba(212, 175, 55, 0.08);
-            border: 1px solid var(--border-glow);
-            color: var(--accent-gold);
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
-        }
-
-        header h1 {
-            font-family: 'Amiri', serif;
-            font-size: 2.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #f8fafc 20%, var(--accent-gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 1.05rem;
-            font-weight: 300;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* شريط التنقل الزجاجي */
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            padding: 12px 20px;
-            background: rgba(10, 15, 29, 0.85);
+        /* النافبار الزجاجي */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: var(--glass-bg);
             backdrop-filter: blur(20px);
-            position: sticky;
-            top: 0;
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-light);
             z-index: 1000;
-            border-bottom: 1px solid var(--border-card);
-            overflow-x: auto;
+            padding: 15px 0;
+            transition: var(--transition-smooth);
         }
 
-        .tab-btn {
-            background: transparent;
-            border: 1px solid var(--border-card);
-            color: var(--text-muted);
-            padding: 10px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 0.92rem;
-            font-weight: 600;
-            white-space: nowrap;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tab-btn:active {
-            transform: scale(0.95);
-        }
-
-        .tab-btn.active, .tab-btn:hover {
-            background: rgba(56, 189, 248, 0.08);
-            color: var(--accent-cyan);
-            border-color: rgba(56, 189, 248, 0.3);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
-        }
-
-        /* حاوية المحتوى */
-        .container {
-            max-width: 1000px;
-            margin: 40px auto;
+        .navbar .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 0 20px;
-            position: relative;
-            z-index: 2;
         }
 
-        .section {
-            display: none;
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* البطاقات الفاخرة */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 20px;
-            padding: 35px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
-            opacity: 0.5;
-        }
-
-        .section-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 25px;
+        .brand {
             display: flex;
             align-items: center;
             gap: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-title);
+            text-decoration: none;
         }
 
-        .section-title span {
+        .brand i { color: var(--accent-gold); font-size: 1.8rem; }
+
+        .nav-menu {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 0; height: 2px;
+            background: var(--primary-glow);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary-glow);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .nav-item.active::before { width: 50%; }
+
+        /* الهيدر الرئيسي */
+        .hero {
+            padding: 180px 20px 100px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(251, 191, 36, 0.05);
+            border: 1px solid var(--accent-gold-glow);
+            border-radius: 30px;
             color: var(--accent-gold);
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.05);
+            animation: float 4s ease-in-out infinite;
         }
 
-        /* نظام التسجيل التفاعلي المتقدم (Wizard Steps) */
-        .wizard-steps {
+        .hero h1 {
+            font-family: 'Tajawal', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--primary-glow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-body);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        /* الحاويات والأقسام */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 100px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .content-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: sectionFade 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+
+        .content-section.active { display: block; }
+
+        @keyframes sectionFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* مكونات البطاقات الفاخرة */
+        .section-header {
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-header i {
+            font-size: 2rem;
+            color: var(--primary-glow);
+            background: rgba(56, 189, 248, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+
+        .section-header h2 {
+            font-family: 'Tajawal', sans-serif;
+            font-size: 2.2rem;
+            color: var(--text-title);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .card-premium {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .card-premium::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .card-premium:hover::before { opacity: 1; }
+
+        .card-premium:hover {
+            transform: translateY(-8px);
+            border-color: var(--border-focus);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 30px rgba(56, 189, 248, 0.05);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 25px;
+            display: inline-block;
+        }
+
+        .card-premium h3 {
+            font-size: 1.4rem;
+            color: var(--text-title);
+            margin-bottom: 15px;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .card-premium p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-light);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-body);
+        }
+
+        /* نظام التسجيل المتطور (Wizard) */
+        .wizard-container {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wizard-progress {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
             position: relative;
+            margin-bottom: 50px;
         }
 
-        .wizard-step {
+        .wizard-progress::before {
+            content: '';
+            position: absolute;
+            top: 25px; left: 0; width: 100%; height: 3px;
+            background: var(--border-light);
+            z-index: 1;
+        }
+
+        .progress-bar-fill {
+            position: absolute;
+            top: 25px; right: 0; height: 3px;
+            background: var(--primary-glow);
+            z-index: 2;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .step-indicator {
+            position: relative;
+            z-index: 3;
             text-align: center;
-            flex: 1;
-            position: relative;
-            cursor: pointer;
+            width: 120px;
         }
 
-        .wizard-step .step-num {
-            width: 36px;
-            height: 36px;
-            background: #040710;
-            border: 2px solid var(--border-card);
+        .step-icon {
+            width: 50px; height: 50px;
+            margin: 0 auto 15px;
+            background: var(--bg-surface);
+            border: 3px solid var(--border-light);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 8px;
-            font-weight: 700;
+            font-size: 1.2rem;
             color: var(--text-muted);
-            transition: all 0.3s ease;
+            transition: var(--transition-smooth);
         }
 
-        .wizard-step.active .step-num {
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        .step-indicator.active .step-icon {
+            border-color: var(--primary-glow);
+            color: var(--primary-glow);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
             background: rgba(56, 189, 248, 0.05);
         }
 
-        .wizard-step p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
+        .step-indicator.completed .step-icon {
+            background: var(--primary-glow);
+            border-color: var(--primary-glow);
+            color: var(--bg-base);
         }
 
-        .wizard-step.active p {
-            color: var(--text-main);
-            font-weight: 600;
-        }
+        .step-indicator p { font-weight: 600; font-size: 0.9rem; color: var(--text-muted); }
+        .step-indicator.active p { color: var(--text-title); }
 
-        .form-step-content {
-            display: none;
-        }
+        .form-step { display: none; animation: sectionFade 0.5s ease forwards; }
+        .form-step.active { display: block; }
 
-        .form-step-content.active {
+        .input-group { margin-bottom: 25px; position: relative; }
+        
+        .input-group label {
             display: block;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .form-group {
-            margin-bottom: 22px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 15px 18px;
-            background: #040710;
-            border: 1px solid var(--border-card);
-            border-radius: 12px;
-            color: var(--text-main);
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .btn-custom {
-            flex: 1;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
-        }
-
-        .btn-custom:active {
-            transform: scale(0.97);
-        }
-
-        .btn-primary-custom {
-            background: linear-gradient(135deg, var(--accent-cyan), #2563eb);
-            color: #040710;
-            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
-        }
-
-        .btn-primary-custom:hover {
-            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary-custom {
-            background: transparent;
-            border: 1px solid var(--border-card);
-            color: var(--text-muted);
-        }
-
-        .btn-secondary-custom:hover {
-            border-color: var(--text-muted);
-            color: var(--text-main);
-        }
-
-        /* الموسوعة الإسلامية الموضوعية (أشبه بـ SurahApp) */
-        .encyclopedia-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .encyclopedia-item {
-            background: #040710;
-            border: 1px solid var(--border-card);
-            border-radius: 16px;
-            padding: 25px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-
-        .encyclopedia-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--border-glow);
-            background: var(--bg-card-hover);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.1);
-        }
-
-        .encyclopedia-item h3 {
-            color: var(--accent-gold);
-            font-size: 1.15rem;
             margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .encyclopedia-item p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        /* التصويت التفاعلي بنقرات واهتزاز ناعم */
-        .vote-card {
-            background: #040710;
-            border: 1px solid var(--border-card);
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .vote-card:hover {
-            border-color: var(--accent-cyan);
-            background: var(--bg-card-hover);
-            transform: scale(1.01);
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.12);
-        }
-
-        .vote-card:active {
-            transform: scale(0.98);
-        }
-
-        .vote-info h4 {
-            font-size: 1.05rem;
-            color: var(--text-main);
-            margin-bottom: 5px;
-        }
-
-        .vote-info p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .vote-badge {
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: var(--accent-cyan);
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.1);
-        }
-
-        /* رسالة النجاح المنبثقة */
-        .success-alert {
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid var(--accent-cyan);
-            color: var(--accent-cyan);
-            padding: 18px;
-            border-radius: 12px;
-            text-align: center;
             font-weight: 600;
-            display: none;
-            margin-bottom: 20px;
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
-        }
-    </style>
-</head>
-<body>
-
-    <!-- خلفية الغبار المتحرك -->
-    <canvas id="dustCanvas"></canvas>
-
-    <header>
-        <div class="logo-badge">الموسوعة الإسلامية والمنافسة المنهجية</div>
-        <h1>منهاج أهل السنة والجماعة</h1>
-        <p>منصة رقمية متقدمة للتأصيل العلمي والموضوعي المستند إلى الأصول الأصيلة</p>
-    </header>
-
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('encyclopedia', event)">الموسوعة الموضوعية</button>
-        <button class="tab-btn" onclick="switchTab('register', event)">الاعتماد والمسار</button>
-        <button class="tab-btn" onclick="switchTab('curriculum', event)">المتون والمستويات</button>
-        <button class="tab-btn" onclick="switchTab('voting', event)">التصويت التفاعلي</button>
-    </div>
-
-    <div class="container">
-
-        <!-- القسم الأول: الموسوعة الإسلامية الموضوعية (مستوحى من المواقع الضخمة) -->
-        <div id="encyclopedia" class="section active">
-            <div class="card">
-                <h2 class="section-title">محاور <span>التفسير الموضوعي</span> وعلوم الشريعة</h2>
-                <div class="encyclopedia-grid">
-                    <div class="encyclopedia-item">
-                        <h3>أصالة المنهج العقدي</h3>
-                        <p>دراسة تفصيلية لمفاهيم التوحيد، الاعتقاد السليم، والرد المنهجي على الشبهات المعاصرة وفق أصول السلف.</p>
-                    </div>
-                    <div class="encyclopedia-item">
-                        <h3>بلاغة لغة القرآن</h3>
-                        <p>الاستقراء اللغوي والدلالي للألفاظ القرآنية، وبيان وجه الإعجاز البياني في سور التنزيل الحكيم.</p>
-                    </div>
-                    <div class="encyclopedia-item">
-                        <h3>علوم السنة والنبوة</h3>
-                        <p>منهج المحدثين في نقد الأحاديث، فقه السيرة النبوية، واستنباط القواعد القيادية والتربوية العطرة.</p>
-                    </div>
-                    <div class="encyclopedia-item">
-                        <h3>الفقه المنهجي والنوازل</h3>
-                        <p>تنزيل الأحكام الشرعية على المستجدات العصرية بفقه رصين يجمع بين الأصالة ومرونة الاجتهاد.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- القسم الثاني: نظام التسجيل التفاعلي المتطور (بدل الاستمارة التقليدية) -->
-        <div id="register" class="section">
-            <div class="card">
-                <h2 class="section-title">بوابة الاعتماد والتسجيل <span>الرقمي</span></h2>
-                <div id="successMsg" class="success-alert">تم اعتماد بياناتك في سجلات المنصة المركزية بنجاح تام!</div>
-                
-                <div class="wizard-steps">
-                    <div class="wizard-step active" id="wStep1">
-                        <div class="step-num">1</div>
-                        <p>البيانات الشخصية</p>
-                    </div>
-                    <div class="wizard-step" id="wStep2">
-                        <div class="step-num">2</div>
-                        <p>المسار الأكاديمي</p>
-                    </div>
-                    <div class="wizard-step" id="wStep3">
-                        <div class="step-num">3</div>
-                        <p>المستوى العلمي</p>
-                    </div>
-                </div>
-
-                <form id="advancedForm" onsubmit="completeRegistration(event)">
-                    <!-- الخطوة الأولى -->
-                    <div class="form-step-content active" id="stepContent1">
-                        <div class="form-group">
-                            <label>الاسم الثلاثي واللقب الكريم:</label>
-                            <input type="text" class="form-control" placeholder="أدخل اسمك الكامل هنا..." required>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn-custom btn-primary-custom" onclick="nextStep(2)">التالي</button>
-                        </div>
-                    </div>
-
-                    <!-- الخطوة الثانية -->
-                    <div class="form-step-content" id="stepContent2">
-                        <div class="form-group">
-                            <label>المرحلة الدراسية أو التخصص:</label>
-                            <select class="form-control">
-                                <option>المرحلة الإعدادية / السادس العلمي</option>
-                                <option>المرحلة الثانوية العامة</option>
-                                <option>المرحلة الجامعية والأكاديمية</option>
-                                <option>دراسات حرة وتصيل علمي</option>
-                            </select>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn-custom btn-secondary-custom" onclick="nextStep(1)">السابق</button>
-                            <button type="button" class="btn-custom btn-primary-custom" onclick="nextStep(3)">التالي</button>
-                        </div>
-                    </div>
-
-                    <!-- الخطوة الثالثة -->
-                    <div class="form-step-content" id="stepContent3">
-                        <div class="form-group">
-                            <label>المستوى المنهجي المطلوب:</label>
-                            <select class="form-control">
-                                <option>المستوى الأول (تأصيل المبتدئين - الأصول الثلاثة والنووية)</option>
-                                <option>المستوى الثاني (المتوسط - العقيدة الواسطية وعمدة الأحكام)</option>
-                                <option>المستوى الثالث (المتقدم - التحقيق والتوحيد المقارن)</option>
-                            </select>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn-custom btn-secondary-custom" onclick="nextStep(2)">السابق</button>
-                            <button type="submit" class="btn-custom btn-primary-custom">تأكيد واعتماد التسجيل</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- القسم الثالث: المتون والمستويات -->
-        <div id="curriculum" class="section">
-            <div class="card">
-                <h2 class="section-title">هيكلية <span>المتون العلمية</span> المعتمدة</h2>
-                <div class="encyclopedia-grid">
-                    <div class="encyclopedia-item">
-                        <h3>المستوى التأسيسي</h3>
-                        <p>حفظ الأصول الثلاثة، قواعد الإيمان، والأربعين النووية مع شرح المفاهيم الإجمالية.</p>
-                    </div>
-                    <div class="encyclopedia-item">
-                        <h3>المستوى المتوسط</h3>
-                        <p>دراسة العقيدة الواسطية، كتاب التوحيد، وعمدة الأحكام في الفقه المقارن.</p>
-                    </div>
-                    <div class="encyclopedia-item">
-                        <h3>المستوى التخصصي</h3>
-                        <p>التأصيل المتقدم في أصول الفقه، مصطلح الحديث، والردود المنهجية الرصينة.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- القسم الرابع: التصويت التفاعلي -->
-        <div id="voting" class="section">
-            <div class="card">
-                <h2 class="section-title">التصويت والتفاعل <span>المنهجي المباشر</span></h2>
-                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">انقر على المحور لدعم المؤشر وتحديث النقاط الحية فورياً:</p>
-                
-                <div class="vote-card" onclick="castVote(this, 'v1')">
-                    <div class="vote-info">
-                        <h4>محور العقيدة والارتباط بالواقع المعاصر</h4>
-                        <p>تفعيل أصول الإيمان لمواجهة التحديات الفكرية الحديثة</p>
-                    </div>
-                    <div class="vote-badge" id="v1">512</div>
-                </div>
-
-                <div class="vote-card" onclick="castVote(this, 'v2')">
-                    <div class="vote-info">
-                        <h4>محور الفقه المنهجي والنوازل العصرية</h4>
-                        <p>تنزيل الأحكام الشرعية على المستجدات والوقائع المعاصرة</p>
-                    </div>
-                    <div class="vote-badge" id="v2">384<<!DOCTYPE html>
+            color: var(--text-body);
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المنهاج السني - الموسوعة الإسلامية والمنافسة المنهجية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Amiri:wght@600;700&display=swap" rel="stylesheet">
+    <title>منصة المنهاج - الموسوعة الإسلامية الشاملة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-deep: #040710;
-            --bg-card: #0a0f1d;
-            --bg-card-hover: #10182d;
-            --accent-gold: #d4af37;
-            --accent-cyan: #38bdf8;
-            --accent-glow: rgba(56, 189, 248, 0.15);
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border-card: rgba(148, 163, 184, 0.08);
-            --border-glow: rgba(212, 175, 55, 0.25);
+            --bg-base: #020617;
+            --bg-surface: #0f172a;
+            --bg-surface-hover: #1e293b;
+            --primary-glow: #38bdf8;
+            --primary-dark: #0284c7;
+            --accent-gold: #fbbf24;
+            --accent-gold-glow: rgba(251, 191, 36, 0.2);
+            --text-title: #f8fafc;
+            --text-body: #cbd5e1;
+            --text-muted: #64748b;
+            --border-light: rgba(255, 255, 255, 0.05);
+            --border-focus: rgba(56, 189, 248, 0.4);
+            --success: #10b981;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Cairo', sans-serif;
+            box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-body);
+            line-height: 1.7;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* خلفية جزيئات الغبار الناعم (Canvas) */
-        #dustCanvas {
+        body::before {
+            content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.04), transparent 40%),
+                        radial-gradient(circle at 85% 10%, rgba(251, 191, 36, 0.03), transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* شريط التمرير المخصص */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-surface-hover); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+
+        /* Canvas الجزيئات */
+        #particleCanvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 1;
         }
 
-        /* الهيدر السينمائي الفاخر */
-        header {
-            text-align: center;
-            padding: 60px 20px 30px;
-            position: relative;
-            z-index: 2;
-            background: linear-gradient(to bottom, rgba(4,7,16,0.9), transparent);
-        }
-
-        header .logo-badge {
-            display: inline-block;
-            padding: 6px 18px;
-            background: rgba(212, 175, 55, 0.08);
-            border: 1px solid var(--border-glow);
-            color: var(--accent-gold);
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
-        }
-
-        header h1 {
-            font-family: 'Amiri', serif;
-            font-size: 2.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #f8fafc 20%, var(--accent-gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 1.05rem;
-            font-weight: 300;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* شريط التنقل الزجاجي */
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            padding: 12px 20px;
-            background: rgba(10, 15, 29, 0.85);
+        /* النافبار الزجاجي */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: var(--glass-bg);
             backdrop-filter: blur(20px);
-            position: sticky;
-            top: 0;
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-light);
             z-index: 1000;
-            border-bottom: 1px solid var(--border-card);
-            overflow-x: auto;
+            padding: 15px 0;
+            transition: var(--transition-smooth);
         }
 
-        .tab-btn {
-            background: transparent;
-            border: 1px solid var(--border-card);
-            color: var(--text-muted);
-            padding: 10px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 0.92rem;
-            font-weight: 600;
-            white-space: nowrap;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tab-btn:active {
-            transform: scale(0.95);
-        }
-
-        .tab-btn.active, .tab-btn:hover {
-            background: rgba(56, 189, 248, 0.08);
-            color: var(--accent-cyan);
-            border-color: rgba(56, 189, 248, 0.3);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
-        }
-
-        /* حاوية المحتوى */
-        .container {
-            max-width: 1000px;
-            margin: 40px auto;
+        .navbar .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 0 20px;
-            position: relative;
-            z-index: 2;
         }
 
-        .section {
-            display: none;
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* البطاقات الفاخرة */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 20px;
-            padding: 35px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
-            opacity: 0.5;
-        }
-
-        .section-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 25px;
+        .brand {
             display: flex;
             align-items: center;
             gap: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-title);
+            text-decoration: none;
         }
 
-        .section-title span {
+        .brand i { color: var(--accent-gold); font-size: 1.8rem; }
+
+        .nav-menu {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 0; height: 2px;
+            background: var(--primary-glow);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary-glow);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .nav-item.active::before { width: 50%; }
+
+        /* الهيدر الرئيسي */
+        .hero {
+            padding: 180px 20px 100px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(251, 191, 36, 0.05);
+            border: 1px solid var(--accent-gold-glow);
+            border-radius: 30px;
             color: var(--accent-gold);
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.05);
+            animation: float 4s ease-in-out infinite;
         }
 
-        /* نظام التسجيل التفاعلي المتقدم (Wizard Steps) */
-        .wizard-steps {
+        .hero h1 {
+            font-family: 'Tajawal', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--primary-glow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-body);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        /* الحاويات والأقسام */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 100px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .content-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: sectionFade 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+
+        .content-section.active { display: block; }
+
+        @keyframes sectionFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* مكونات البطاقات الفاخرة */
+        .section-header {
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-header i {
+            font-size: 2rem;
+            color: var(--primary-glow);
+            background: rgba(56, 189, 248, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+
+        .section-header h2 {
+            font-family: 'Tajawal', sans-serif;
+            font-size: 2.2rem;
+            color: var(--text-title);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .card-premium {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .card-premium::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .card-premium:hover::before { opacity: 1; }
+
+        .card-premium:hover {
+            transform: translateY(-8px);
+            border-color: var(--border-focus);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 30px rgba(56, 189, 248, 0.05);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 25px;
+            display: inline-block;
+        }
+
+        .card-premium h3 {
+            font-size: 1.4rem;
+            color: var(--text-title);
+            margin-bottom: 15px;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .card-premium p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-light);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-body);
+        }
+
+        /* نظام التسجيل المتطور (Wizard) */
+        .wizard-container {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wizard-progress {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
             position: relative;
+            margin-bottom: 50px;
         }
 
-        .wizard-step {
+        .wizard-progress::before {
+            content: '';
+            position: absolute;
+            top: 25px; left: 0; width: 100%; height: 3px;
+            background: var(--border-light);
+            z-index: 1;
+        }
+
+        .progress-bar-fill {
+            position: absolute;
+            top: 25px; right: 0; height: 3px;
+            background: var(--primary-glow);
+            z-index: 2;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .step-indicator {
+            position: relative;
+            z-index: 3;
             text-align: center;
-            flex: 1;
-            position: relative;
-            cursor: pointer;
+            width: 120px;
         }
 
-        .wizard-step .step-num {
-            width: 36px;
-            height: 36px;
-            background: #040710;
-            border: 2px solid var(--border-card);
+        .step-icon {
+            width: 50px; height: 50px;
+            margin: 0 auto 15px;
+            background: var(--bg-surface);
+            border: 3px solid var(--border-light);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 8px;
-            font-weight: 700;
+            font-size: 1.2rem;
             color: var(--text-muted);
-            transition: all 0.3s ease;
+            transition: var(--transition-smooth);
         }
 
-        .wizard-step.active .step-num {
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        .step-indicator.active .step-icon {
+            border-color: var(--primary-glow);
+            color: var(--primary-glow);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
             background: rgba(56, 189, 248, 0.05);
         }
 
-        .wizard-step p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
+        .step-indicator.completed .step-icon {
+            background: var(--primary-glow);
+            border-color: var(--primary-glow);
+            color: var(--bg-base);
         }
 
-        .wizard-step.active p {
-            color: var(--text-main);
+        .step-indicator p { font-weight: 600; font-size: 0.9rem; color: var(--text-muted); }
+        .step-indicator.active p { color: var(--text-title); }
+
+        .form-step { display: none; animation: sectionFade 0.5s ease forwards; }
+        .form-step.active { display: block; }
+
+        .input-group { margin-bottom: 25px; position: relative; }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
             font-weight: 600;
-        }
-
-        .form-step-content {
-            display: none;
-        }
-
-        .form-step-content.active {
-            display: block;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .form-group {
-            margin-bottom: 22px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-muted);
+            color: var(--text-body);
             font-size: 0.95rem;
         }
 
-        .form-control {
+        .form-input {
             width: 100%;
-            padding: 15px 18px;
-            background: #040710;
-            border: 1px solid var(--border-card);
-            border-radius: 12px;
-            color: var(--text-main);
+            background: var(--bg-base);
+            border: 1px solid var(--border-light);
+            padding: 16px 20px;
+            border-radius: 15px;
+            color: var(--text-title);
+            font-family: inherit;
             font-size: 1rem;
+            transition: var(--transition-smooth);
+        }
+
+        .form-input:focus {
             outline: none;
-            transition: all 0.3s ease;
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
         }
 
-        .form-control:focus {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+        select.form-input { appearance: none; cursor: pointer; }
+        .select-wrapper { position: relative; }
+        .select-wrapper::after {
+            content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); pointer-events: none;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .btn-custom {
-            flex: 1;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 1rem;
+        .btn-controls { display: flex; gap: 20px; margin-top: 40px; }
+        
+        .btn {
+            padding: 16px 32px;
+            border-radius: 15px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
-        }
-
-        .btn-custom:active {
-            transform: scale(0.97);
-        }
-
-        .btn-primary-custom {
-            background: linear-gradient(135deg, var(--accent-cyan), #2563eb);
-            color: #040710;
-            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
-        }
-
-        .btn-primary-custom:hover {
-            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary-custom {
-            background: transparent;
-            border: 1px solid var(--border-card);
-            color: var(--text-muted);
-        }
-
-        .btn-secondary-custom:hover {
-            border-color: var(--text-muted);
-            color: var(--text-main);
-        }
-
-        /* الموسوعة الإسلامية الموضوعية (أشبه بـ SurahApp) */
-        .encyclopedia-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .encyclopedia-item {
-            background: #040710;
-            border: 1px solid var(--border-card);
-            border-radius: 16px;
-            padding: 25px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-smooth);
             position: relative;
+            overflow: hidden;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        .encyclopedia-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--border-glow);
-            background: var(--bg-card-hover);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.1);
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-glow));
+            color: #fff;
+            flex: 2;
+            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.3);
         }
 
-        .encyclopedia-item h3 {
-            color: var(--accent-gold);
-            font-size: 1.15rem;
-            margin-bottom: 10px;
-            font-weight: 700;
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(2, 132, 199, 0.5); }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-body);
+            flex: 1;
+        }
+        
+        .btn-secondary:hover { background: rgba(255,255,255,0.05); color: var(--text-title); }
+
+        /* تأثير التموج للأزرار (Ripple) */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-anim 0.6s linear;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
+        /* نظام التصويت الحي */
+        .poll-container {
+            background: var(--bg-surface);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid var(--border-light);
         }
 
-        .encyclopedia-item p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        /* التصويت التفاعلي بنقرات واهتزاز ناعم */
-        .vote-card {
-            background: #040710;
-            border: 1px solid var(--border-card);
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 15px;
+        .poll-item { margin-bottom: 30px; cursor: pointer; }
+        
+        .poll-info {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .vote-card:hover {
-            border-color: var(--accent-cyan);
-            background: var(--bg-card-hover);
-            transform: scale(1.01);
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.12);
-        }
-
-        .vote-card:active {
-            transform: scale(0.98);
-        }
-
-        .vote-info h4 {
-            font-size: 1.05rem;
-            color: var(--text-main);
-            margin-bottom: 5px;
-        }
-
-        .vote-info p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .vote-badge {
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: var(--accent-cyan);
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.1);
-        }
-
-        /* رسالة النجاح المنبثقة */
-        .success-alert {
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid var(--accent-cyan);
-            color: var(--accent-cyan);
-            padding: 18px;
-            border-radius: 12px;
-            text-align: center;
+            margin-bottom: 12px;
             font-weight: 600;
-            display: none;
-            margin-bottom: 20px;
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+        }
+
+        .poll-info h4 { font-size: 1.1rem; color: var(--text-title); transition: color 0.3s; }
+        .poll-item:hover .poll-info h4 { color: var(--primary-glow); }
+        .poll-info span { color: var(--accent-gold); }
+
+        .poll-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: var(--bg-base);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+
+        .poll-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary-glow));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+        }
+        
+        .poll-bar-fill::after {
+            content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer { 100% { transform: translateX(100%); } }
+
+        /* الفوتر */
+        footer {
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-light);
+            padding: 60px 20px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 { color: var(--text-title); margin-bottom: 20px; font-family: 'Tajawal'; }
+        .footer-col p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 15px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a {
+            color: var(--text-body); text-decoration: none; transition: var(--transition-smooth);
+            display: inline-block;
+        }
+        .footer-links a:hover { color: var(--primary-glow); transform: translateX(-5px); }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-    <!-- خلفية الغبار المتحرك -->
-    <canvas id="dustCanvas"></canvas>
+    <!-- نظام الجزيئات الخلفية المضيئة -->
+    <canvas id="particleCanvas"></canvas>
 
-    <header>
-        <div class="logo-badge">الموسوعة الإسلامية والمنافسة المنهجية</div>
-        <h1>منهاج أهل السنة والجماعة</h1>
-        <p>منصة رقمية متقدمة للتأصيل العلمي والموضوعي المستند إلى الأصول الأصيلة</p>
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="brand">
+                <i class="fa-solid fa-book-quran"></i>
+                منصة المنهاج
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="switchSection('encyclopedia', this)">الموسوعة الموضوعية</li>
+                <li class="nav-item" onclick="switchSection('curriculum', this)">المسارات العلمية</li>
+                <li class="nav-item" onclick="switchSection('registration', this)">الاعتماد والتسجيل</li>
+                <li class="nav-item" onclick="switchSection('interactive', this)">التفاعل الحي</li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- الهيدر الترحيبي -->
+    <header class="hero">
+        <div class="hero-badge">
+            <i class="fa-solid fa-star-and-crescent"></i>
+            الإصدار المتقدم للموسوعة الإسلامية
+        </div>
+        <h1>الموسوعة الإسلامية والمنافسة المنهجية</h1>
+        <p>صرح رقمي متكامل يجمع بين عمق التأصيل العلمي وجمالية العرض التقني، لتخريج جيل راسخ في أصول الاعتقاد وفقه النوازل وفق منهج أهل السنة والجماعة.</p>
     </header>
 
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('encyclopedia', event)">الموسوعة الموضوعية</button>
-        <button class="tab-btn" onclick="switchTab('register', event)">الاعتماد والمسار</button>
-        <button class="tab-btn" onclick="switchTab('curriculum', event)">المتون والمستويات</button>
-        <button class="tab-btn" onclick="switchTab('voting', event)">التصويت التفاعلي</button>
-    </div>
+    <!-- الحاوية الرئيسية للمحتوى المتغير -->
+    <main class="main-container">
 
-    <div class="container">
-
-        <!-- القسم الأول: الموسوعة الإسلامية الموضوعية (مستوحى من المواقع الضخمة) -->
-        <div id="encyclopedia" class="section active">
-            <div class="card">
-                <h2 class="section-title">محاور <span>التفسير الموضوعي</span> وعلوم الشريعة</h2>
-                <div class="encyclopedia-grid">
-                    <div class="encyclopedia-item">
-                        <h3>أصالة المنهج العقدي</h3>
-                        <p>دراسة تفصيلية لمفاهيم التوحيد، الاعتقاد السليم، والرد المنهجي على الشبهات المعاصرة وفق أصول السلف.</p>
-                    </div>
-                    <div class="encyclopedia-item">
-                        <h3>بلاغة لغة القرآن</h3>
-                        <p>الاستقراء اللغوي والدلالي للألفاظ القرآنية، وبيان وجه الإعجاز البياني في سور التنزيل الحكيم.</p>
-                    </div>
-                    <div class="encyclopedia-item">
-                        <h3>علوم السنة والنبوة</h3>
-                        <p>منهج المحدثين في نقد الأحاديث، فقه السيرة النبوية، واستنباط القواعد القيادية والتربوية العطرة.</p>
-                    </div>
-                    <div class="encyclopedia-item">
-                        <h3>الفقه المنهجي والنوازل</h3>
-                        <p>تنزيل الأحكام الشرعية على المستجدات العصرية بفقه رصين يجمع بين الأصالة ومرونة الاجتهاد.</p>
-                    </div>
-                </div>
+        <!-- القسم الأول: الموسوعة الإسلامية الموضوعية -->
+        <section id="encyclopedia" class="content-section active">
+            <div class="section-header">
+                <i class="fa-solid fa-book-open-reader"></i>
+                <h2>دواوين العلم والتفسير الموضوعي</h2>
             </div>
-        </div>
-
-        <!-- القسم الثاني: نظام التسجيل التفاعلي المتطور (بدل الاستمارة التقليدية) -->
-        <div id="register" class="section">
-            <div class="card">
-                <h2 class="section-title">بوابة الاعتماد والتسجيل <span>الرقمي</span></h2>
-                <div id="successMsg" class="success-alert">تم اعتماد بياناتك في سجلات المنصة المركزية بنجاح تام!</div>
-                
-                <div class="wizard-steps">
-                    <div class="wizard-step active" id="wStep1">
-                        <div class="step-num">1</div>
-                        <p>البيانات الشخصية</p>
-                    </div>
-                    <div class="wizard-step" id="wStep2">
-                        <div class="step-num">2</div>
-                        <p>المسار الأكاديمي</p>
-                    </div>
-                    <div class="wizard-step" id="wStep3">
-                        <div class="step-num">3</div>
-                        <p>المستوى العلمي</p>
+            <div class="grid-layout">
+                <!-- بطاقة 1 -->
+                <div class="card-premium" onmousemove="handleCardHover(event, this)">
+                    <i class="fa-solid fa-kaaba card-icon"></i>
+                    <h3>أصالة المنهج العقدي</h3>
+                    <p>دراسة استقرائية معمقة في قضايا التوحيد، الإيمان، والقدر. مع تفكيك الشبهات المعاصرة والرد عليها بمنهجية علمية صارمة تستمد قوتها من الوحيين وتراث السلف الصالح.</p>
+                    <div class="tag-container">
+                        <span class="tag">العقيدة الواسطية</span>
+                        <span class="tag">كتاب التوحيد</span>
+                        <span class="tag">الطحاوية</span>
                     </div>
                 </div>
+                <!-- بطاقة 2 -->
+                <div class="card-premium" onmousemove="handleCardHover(event, this)">
+                    <i class="fa-solid fa-feather-pointed card-icon"></i>
+                    <h3>الإعجاز والبلاغة القرآنية</h3>
+                    <p>الغوص في بحار لغة الضاد، واستخراج درر الدلالات القرآنية، بيان وجوه الإعجاز التشريعي والغيبي والبياني، وتذوق حلاوة النظم القرآني الفريد المعجز.</p>
+                    <div class="tag-container">
+                        <span class="tag">التفسير الموضوعي</span>
+                        <span class="tag">علوم القرآن</span>
+              <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة المنهاج - الموسوعة الإسلامية الشاملة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-base: #020617;
+            --bg-surface: #0f172a;
+            --bg-surface-hover: #1e293b;
+            --primary-glow: #38bdf8;
+            --primary-dark: #0284c7;
+            --accent-gold: #fbbf24;
+            --accent-gold-glow: rgba(251, 191, 36, 0.2);
+            --text-title: #f8fafc;
+            --text-body: #cbd5e1;
+            --text-muted: #64748b;
+            --border-light: rgba(255, 255, 255, 0.05);
+            --border-focus: rgba(56, 189, 248, 0.4);
+            --success: #10b981;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
 
-                <form id="advancedForm" onsubmit="completeRegistration(event)">
-                    <!-- الخطوة الأولى -->
-                    <div class="form-step-content active" id="stepContent1">
-                        <div class="form-group">
-                            <label>الاسم الثلاثي واللقب الكريم:</label>
-                            <input type="text" class="form-control" placeholder="أدخل اسمك الكامل هنا..." required>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn-custom btn-primary-custom" onclick="nextStep(2)">التالي</button>
-                        </div>
-                    </div>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-                    <!-- الخطوة الثانية -->
-                    <div class="form-step-content" id="stepContent2">
-                        <div class="form-group">
-                            <label>المرحلة الدراسية أو التخصص:</label>
-                            <select class="form-control">
-                                <option>المرحلة الإعدادية / السادس العلمي</option>
-                                <option>المرحلة الثانوية العامة</option>
-                                <option>المرحلة الجامعية والأكاديمية</option>
-                                <option>دراسات حرة وتصيل علمي</option>
-                            </select>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn-custom btn-secondary-custom" onclick="nextStep(1)">السابق</button>
-                            <button type="button" class="btn-custom btn-primary-custom" onclick="nextStep(3)">التالي</button>
-                        </div>
-                    </div>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-body);
+            line-height: 1.7;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-                    <!-- الخطوة الثالثة -->
-                    <div class="form-step-content" id="stepContent3">
-                        <div class="form-group">
-                            <label>المستوى المنهجي المطلوب:</label>
-                            <select class="form-control">
-                                <option>المستوى الأول (تأصيل المبتدئين - الأصول الثلاثة والنووية)</option>
-                                <option>المستوى الثاني (المتوسط - العقيدة الواسطية وعمدة الأحكام)</option>
-                                <option>المستوى الثالث (المتقدم - التحقيق والتوحيد المقارن)</option>
-                            </select>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn-custom btn-secondary-custom" onclick="nextStep(2)">السابق</button>
-                            <button type="submit" class="btn-custom btn-primary-custom">تأكيد واعتماد التسجيل</button>
-                        </div>
-                    </div>
-                </form>
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.04), transparent 40%),
+                        radial-gradient(circle at 85% 10%, rgba(251, 191, 36, 0.03), transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* شريط التمرير المخصص */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-surface-hover); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+
+        /* Canvas الجزيئات */
+        #particleCanvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* النافبار الزجاجي */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-light);
+            z-index: 1000;
+            padding: 15px 0;
+            transition: var(--transition-smooth);
+        }
+
+        .navbar .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-title);
+            text-decoration: none;
+        }
+
+        .brand i { color: var(--accent-gold); font-size: 1.8rem; }
+
+        .nav-menu {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 0; height: 2px;
+            background: var(--primary-glow);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary-glow);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .nav-item.active::before { width: 50%; }
+
+        /* الهيدر الرئيسي */
+        .hero {
+            padding: 180px 20px 100px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(251, 191, 36, 0.05);
+            border: 1px solid var(--accent-gold-glow);
+            border-radius: 30px;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.05);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .hero h1 {
+            font-family: 'Tajawal', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--primary-glow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-body);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        /* الحاويات والأقسام */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 100px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .content-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: sectionFade 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+
+        .content-section.active { display: block; }
+
+        @keyframes sectionFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* مكونات البطاقات الفاخرة */
+        .section-header {
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-header i {
+            font-size: 2rem;
+            color: var(--primary-glow);
+            background: rgba(56, 189, 248, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+
+        .section-header h2 {
+            font-family: 'Tajawal', sans-serif;
+            font-size: 2.2rem;
+            color: var(--text-title);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .card-premium {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .card-premium::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .card-premium:hover::before { opacity: 1; }
+
+        .card-premium:hover {
+            transform: translateY(-8px);
+            border-color: var(--border-focus);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 30px rgba(56, 189, 248, 0.05);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 25px;
+            display: inline-block;
+        }
+
+        .card-premium h3 {
+            font-size: 1.4rem;
+            color: var(--text-title);
+            margin-bottom: 15px;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .card-premium p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-light);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-body);
+        }
+
+        /* نظام التسجيل المتطور (Wizard) */
+        .wizard-container {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wizard-progress {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        .wizard-progress::before {
+            content: '';
+            position: absolute;
+            top: 25px; left: 0; width: 100%; height: 3px;
+            background: var(--border-light);
+            z-index: 1;
+        }
+
+        .progress-bar-fill {
+            position: absolute;
+            top: 25px; right: 0; height: 3px;
+            background: var(--primary-glow);
+            z-index: 2;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .step-indicator {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            width: 120px;
+        }
+
+        .step-icon {
+            width: 50px; height: 50px;
+            margin: 0 auto 15px;
+            background: var(--bg-surface);
+            border: 3px solid var(--border-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            transition: var(--transition-smooth);
+        }
+
+        .step-indicator.active .step-icon {
+            border-color: var(--primary-glow);
+            color: var(--primary-glow);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .step-indicator.completed .step-icon {
+            background: var(--primary-glow);
+            border-color: var(--primary-glow);
+            color: var(--bg-base);
+        }
+
+        .step-indicator p { font-weight: 600; font-size: 0.9rem; color: var(--text-muted); }
+        .step-indicator.active p { color: var(--text-title); }
+
+        .form-step { display: none; animation: sectionFade 0.5s ease forwards; }
+        .form-step.active { display: block; }
+
+        .input-group { margin-bottom: 25px; position: relative; }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-body);
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--bg-base);
+            border: 1px solid var(--border-light);
+            padding: 16px 20px;
+            border-radius: 15px;
+            color: var(--text-title);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+        }
+
+        select.form-input { appearance: none; cursor: pointer; }
+        .select-wrapper { position: relative; }
+        .select-wrapper::after {
+            content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); pointer-events: none;
+        }
+
+        .btn-controls { display: flex; gap: 20px; margin-top: 40px; }
+        
+        .btn {
+            padding: 16px 32px;
+            border-radius: 15px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-glow));
+            color: #fff;
+            flex: 2;
+            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.3);
+        }
+
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(2, 132, 199, 0.5); }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-body);
+            flex: 1;
+        }
+        
+        .btn-secondary:hover { background: rgba(255,255,255,0.05); color: var(--text-title); }
+
+        /* تأثير التموج للأزرار (Ripple) */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-anim 0.6s linear;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
+        /* نظام التصويت الحي */
+        .poll-container {
+            background: var(--bg-surface);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid var(--border-light);
+        }
+
+        .poll-item { margin-bottom: 30px; cursor: pointer; }
+        
+        .poll-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .poll-info h4 { font-size: 1.1rem; color: var(--text-title); transition: color 0.3s; }
+        .poll-item:hover .poll-info h4 { color: var(--primary-glow); }
+        .poll-info span { color: var(--accent-gold); }
+
+        .poll-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: var(--bg-base);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+
+        .poll-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary-glow));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+        }
+        
+        .poll-bar-fill::after {
+            content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer { 100% { transform: translateX(100%); } }
+
+        /* الفوتر */
+        footer {
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-light);
+            padding: 60px 20px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 { color: var(--text-title); margin-bottom: 20px; font-family: 'Tajawal'; }
+        .footer-col p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 15px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a {
+            color: var(--text-body); text-decoration: none; transition: var(--transition-smooth);
+            display: inline-block;
+        }
+        .footer-links a:hover { color: var(--primary-glow); transform: translateX(-5px); }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- نظام الجزيئات الخلفية المضيئة -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="brand">
+                <i class="fa-solid fa-book-quran"></i>
+                منصة المنهاج
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="switchSection('encyclopedia', this)">الموسوعة الموضوعية</li>
+                <li class="nav-item" onclick="switchSection('curriculum', this)">المسارات العلمية</li>
+                <li class="nav-item" onclick="switchSection('registration', this)">الاعتماد والتسجيل</li>
+                <li class="nav-item" onclick="switchSection('interactive', this)">التفاعل الحي</li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- الهيدر الترحيبي -->
+    <header class="hero">
+        <div class="hero-badge">
+            <i class="fa-solid fa-star-and-crescent"></i>
+            الإصدار المتقدم للموسوعة الإسلامية
+        </div>
+        <h1>الموسوعة الإسلامية والمنافسة المنهجية</h1>
+        <p>صرح رقمي متكامل يجمع بين عمق التأصيل العلمي وجمالية العرض التقني، لتخريج جيل راسخ في أصول الاعتقاد وفقه النوازل وفق منهج أهل السنة والجماعة.</p>
+    </header>
+
+    <!-- الحاوية الرئيسية للمحتوى المتغير -->
+    <main class="main-container">
+
+        <!-- القسم الأول: الموسوعة الإسلامية الموضوعية -->
+        <section id="encyclopedia" class="content-section active">
+            <div class="section-header">
+                <i class="fa-solid fa-book-open-reader"></i>
+                <h2>دواوين العلم والتفسير الموضوعي</h2>
             </div>
-        </div>
-
-        <!-- القسم الثالث: المتون والمستويات -->
-        <div id="curriculum" class="section">
-            <div class="card">
-                <h2 class="section-title">هيكلية <span>المتون العلمية</span> المعتمدة</h2>
-                <div class="encyclopedia-grid">
-                    <div class="encyclopedia-item">
-                        <h3>المستوى التأسيسي</h3>
-                        <p>حفظ الأصول الثلاثة، قواعد الإيمان، والأربعين النووية مع شرح المفاهيم الإجمالية.</p>
-                    </div>
-                    <div class="encyclopedia-item">
-                        <h3>المستوى المتوسط</h3>
-                        <p>دراسة العقيدة الواسطية، كتاب التوحيد، وعمدة الأحكام في الفقه المقارن.</p>
-                    </div>
-                    <div class="encyclopedia-item">
-                        <h3>المستوى التخصصي</h3>
-                        <p>التأصيل المتقدم في أصول الفقه، مصطلح الحديث، والردود المنهجية الرصينة.</p>
+            <div class="grid-layout">
+                <!-- بطاقة 1 -->
+                <div class="card-premium" onmousemove="handleCardHover(event, this)">
+                    <i class="fa-solid fa-kaaba card-icon"></i>
+                    <h3>أصالة المنهج العقدي</h3>
+                    <p>دراسة استقرائية معمقة في قضايا التوحيد، الإيمان، والقدر. مع تفكيك الشبهات المعاصرة والرد عليها بمنهجية علمية صارمة تستمد قوتها من الوحيين وتراث السلف الصالح.</p>
+                    <div class="tag-container">
+                        <span class="tag">العقيدة الواسطية</span>
+                        <span class="tag">كتاب التوحيد</span>
+                        <span class="tag">الطحاوية</span>
                     </div>
                 </div>
-            </div>
-        </div>
+                <!-- بطاقة 2 -->
+                <div class="card-premium" onmousemove="handleCardHover(event, this)">
+                    <i class="fa-solid fa-feather-pointed card-icon"></i>
+                    <h3>الإعجاز والبلاغة القرآنية</h3>
+                    <p>الغوص في بحار لغة الضاد، واستخراج درر الدلالات القرآنية، بيان وجوه الإعجاز التشريعي والغيبي والبياني، وتذوق حلاوة النظم القرآني الفريد المعجز.</p>
+                    <div class="tag-container">
+                        <span class="tag">التفسير الموضوعي</span>
+                        <span class="tag">علوم القرآن</span>
+                          font-size: 0.95rem;
+        }
 
-        <!-- القسم الرابع: التصويت التفاعلي -->
-        <div id="voting" class="section">
-            <div class="card">
-                <h2 class="section-title">التصويت والتفاعل <span>المنهجي المباشر</span></h2>
-                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">انقر على المحور لدعم المؤشر وتحديث النقاط الحية فورياً:</p>
-                
-                <div class="vote-card" onclick="castVote(this, 'v1')">
-                    <div class="vote-info">
-                        <h4>محور العقيدة والارتباط بالواقع المعاصر</h4>
-                        <p>تفعيل أصول الإيمان لمواجهة التحديات الفكرية الحديثة</p>
-                    </div>
-                    <div class="vote-badge" id="v1">512</div>
-                </div>
+        .form-input {
+            width: 100%;
+            background: var(--bg-base);
+            border: 1px solid var(--border-light);
+            padding: 16px 20px;
+            border-radius: 15px;
+            color: var(--text-title);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+        }
 
-                <div class="vote-card" onclick="castVote(this, 'v2')">
-                    <div class="vote-info">
-                        <h4>محور الفقه المنهجي والنوازل العصرية</h4>
-                        <p>تنزيل الأحكام الشرعية على المستجدات والوقائع المعاصرة</p>
-                    </div>
-                    <div class="vote-badge" id="v2">384</div>
-                </div>
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+        }
 
-                <div cl
+        select.form-input { appearance: none; cursor: pointer; }
+        .select-wrapper { position: relative; }
+        .select-wrapper::after {
+            content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); pointer-events: none;
+        }
+
+        .btn-controls { display: flex; gap: 20px; margin-top: 40px; }
+        
+        .btn {
+            padding: 16px 32px;
+            border-radius: 15px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-glow));
+            color: #fff;
+            flex: 2;
+            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.3);
+        }
+
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(2, 132, 199, 0.5); }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-body);
+            flex: 1;
+        }
+        
+        .btn-secondary:hover { background: rgba(255,255,255,0.05); color: var(--text-title); }
+
+        /* تأثير التموج للأزرار (Ripple) */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-anim 0.6s linear;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
+        /* نظام التصويت الحي */
+        .poll-container {
+            background: var(--bg-surface);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid var(--border-light);
+        }
+
+        .poll-item { margin-bottom: 30px; cursor: pointer; }
+        
+        .poll-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .poll-info h4 { font-size: 1.1rem; color: var(--text-title); transition: color 0.3s; }
+        .poll-item:hover .poll-info h4 { color: var(--primary-glow); }
+        .poll-info span { color: var(--accent-gold); }
+
+        .poll-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: var(--bg-base);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+
+        .poll-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary-glow));
+            border-radius: 10px;
+            width: 0%;
