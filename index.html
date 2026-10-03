@@ -3,25 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مسابقة أهل السنة والجماعة - المنصة المركزية</title>
+    <title>منصة المنهاج السني - الموسوعة الإسلامية والمنافسة المنهجية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Amiri:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #060913;
-            --bg-card: #0d1322;
-            --bg-card-hover: #131c31;
-            --accent-glow: #38bdf8;
-            --accent-secondary: #818cf8;
-            --text-main: #f8fafc;
+            --bg-deep: #040710;
+            --bg-card: #0a0f1d;
+            --bg-card-hover: #10182d;
+            --accent-gold: #d4af37;
+            --accent-cyan: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.15);
+            --text-main: #f1f5f9;
             --text-muted: #94a3b8;
-            --border-glow: rgba(56, 189, 248, 0.25);
             --border-card: rgba(148, 163, 184, 0.08);
+            --border-glow: rgba(212, 175, 55, 0.25);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Cairo', 'Tahoma', sans-serif;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -29,91 +32,114 @@
             color: var(--text-main);
             min-height: 100vh;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.03) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(129, 140, 248, 0.03) 0%, transparent 40%);
-        }
-
-        /* الهيدر السينمائي */
-        header {
-            text-align: center;
-            padding: 60px 20px 30px;
-            background: linear-gradient(to bottom, #090e1a, var(--bg-deep));
-            border-bottom: 1px solid var(--border-card);
             position: relative;
         }
 
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+        /* خلفية جزيئات الغبار الناعم (Canvas) */
+        #dustCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* الهيدر السينمائي الفاخر */
+        header {
+            text-align: center;
+            padding: 60px 20px 30px;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(to bottom, rgba(4,7,16,0.9), transparent);
+        }
+
+        header .logo-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid var(--border-glow);
+            color: var(--accent-gold);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
         }
 
         header h1 {
-            font-size: 2.4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #f8fafc 30%, var(--accent-glow) 100%);
+            font-family: 'Amiri', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f8fafc 20%, var(--accent-gold) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             letter-spacing: -0.5px;
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        /* شريط التنقل الزجاجي (Glassmorphism Tabs) */
+        /* شريط التنقل الزجاجي */
         .nav-tabs {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            padding: 15px 20px;
-            background: rgba(13, 19, 34, 0.7);
-            backdrop-filter: blur(16px);
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(10, 15, 29, 0.85);
+            backdrop-filter: blur(20px);
             position: sticky;
             top: 0;
             z-index: 1000;
             border-bottom: 1px solid var(--border-card);
+            overflow-x: auto;
         }
 
         .tab-btn {
             background: transparent;
             border: 1px solid var(--border-card);
             color: var(--text-muted);
-            padding: 10px 22px;
-            border-radius: 10px;
+            padding: 10px 20px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.92rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn:active {
+            transform: scale(0.95);
         }
 
         .tab-btn.active, .tab-btn:hover {
             background: rgba(56, 189, 248, 0.08);
-            color: var(--accent-glow);
-            border-color: var(--border-glow);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.12);
-            transform: translateY(-1px);
+            color: var(--accent-cyan);
+            border-color: rgba(56, 189, 248, 0.3);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
         }
 
-        /* الحاويات الرئيسية */
+        /* حاوية المحتوى */
         .container {
-            max-width: 960px;
+            max-width: 1000px;
             margin: 40px auto;
             padding: 0 20px;
+            position: relative;
+            z-index: 2;
         }
 
         .section {
             display: none;
-            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeIn 0.5s ease forwards;
         }
 
         .section.active {
@@ -121,17 +147,17 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* البطاقات ذات الإشعاع الناعم */
+        /* البطاقات الفاخرة */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-card);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 35px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
             margin-bottom: 30px;
             position: relative;
             overflow: hidden;
@@ -144,31 +170,80 @@
             left: 0;
             width: 100%;
             height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
-            opacity: 0.4;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            opacity: 0.5;
         }
 
-        h2.section-title {
-            color: var(--text-main);
-            margin-bottom: 25px;
+        .section-title {
             font-size: 1.4rem;
             font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
-        h2.section-title::before {
-            content: '';
-            display: inline-block;
-            width: 6px;
-            height: 22px;
-            background: var(--accent-glow);
-            border-radius: 3px;
-            box-shadow: 0 0 10px var(--accent-glow);
+        .section-title span {
+            color: var(--accent-gold);
         }
 
-        /* نموذج التسجيل الحديث */
+        /* نظام التسجيل التفاعلي المتقدم (Wizard Steps) */
+        .wizard-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .wizard-step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .wizard-step .step-num {
+            width: 36px;
+            height: 36px;
+            background: #040710;
+            border: 2px solid var(--border-card);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: 700;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .wizard-step.active .step-num {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .wizard-step p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .wizard-step.active p {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .form-step-content {
+            display: none;
+        }
+
+        .form-step-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
         .form-group {
             margin-bottom: 22px;
         }
@@ -178,15 +253,14 @@
             margin-bottom: 8px;
             color: var(--text-muted);
             font-size: 0.95rem;
-            font-weight: 500;
         }
 
         .form-control {
             width: 100%;
-            padding: 14px 18px;
-            background: #060913;
+            padding: 15px 18px;
+            background: #040710;
             border: 1px solid var(--border-card);
-            border-radius: 10px;
+            border-radius: 12px;
             color: var(--text-main);
             font-size: 1rem;
             outline: none;
@@ -194,255 +268,877 @@
         }
 
         .form-control:focus {
-            border-color: var(--accent-glow);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
-            background: #090e1a;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
         }
 
-        .btn-submit {
-            background: linear-gradient(135deg, var(--accent-glow), var(--accent-secondary));
-            color: #060913;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.05rem;
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-custom {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1rem;
             font-weight: 700;
-            border-radius: 10px;
             cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
         }
 
-        .btn-submit:hover {
+        .btn-custom:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--accent-cyan), #2563eb);
+            color: #040710;
+            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-primary-custom:hover {
+            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
             transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.4);
         }
 
-        /* شبكة المراحل والمستويات الحديثة */
-        .grid-cards {
+        .btn-secondary-custom {
+            background: transparent;
+            border: 1px solid var(--border-card);
+            color: var(--text-muted);
+        }
+
+        .btn-secondary-custom:hover {
+            border-color: var(--text-muted);
+            color: var(--text-main);
+        }
+
+        /* الموسوعة الإسلامية الموضوعية (أشبه بـ SurahApp) */
+        .encyclopedia-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
 
-        .sub-card {
-            background: #060913;
+        .encyclopedia-item {
+            background: #040710;
             border: 1px solid var(--border-card);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 25px;
-            transition: all 0.35s ease;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
 
-        .sub-card:hover {
-            transform: translateY(-4px);
+        .encyclopedia-item:hover {
+            transform: translateY(-5px);
             border-color: var(--border-glow);
             background: var(--bg-card-hover);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(56, 189, 248, 0.05);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.1);
         }
 
-        .sub-card h3 {
-            color: var(--accent-glow);
-            margin-bottom: 12px;
-            font-size: 1.2rem;
-            font-weight: 600;
+        .encyclopedia-item h3 {
+            color: var(--accent-gold);
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
 
-        .sub-card p {
+        .encyclopedia-item p {
             color: var(--text-muted);
-            font-size: 0.92rem;
+            font-size: 0.9rem;
             line-height: 1.6;
         }
 
-        /* نظام التصويت التفاعلي */
-        .vote-item {
-            background: #060913;
+        /* التصويت التفاعلي بنقرات واهتزاز ناعم */
+        .vote-card {
+            background: #040710;
             border: 1px solid var(--border-card);
-            border-radius: 12px;
-            padding: 18px 22px;
+            border-radius: 14px;
+            padding: 20px;
             margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .vote-item:hover {
+        .vote-card:hover {
+            border-color: var(--accent-cyan);
             background: var(--bg-card-hover);
-            border-color: var(--border-glow);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.08);
+            transform: scale(1.01);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.12);
+        }
+
+        .vote-card:active {
+            transform: scale(0.98);
         }
 
         .vote-info h4 {
+            font-size: 1.05rem;
             color: var(--text-main);
             margin-bottom: 5px;
-            font-size: 1.05rem;
         }
 
         .vote-info p {
+            font-size: 0.85rem;
             color: var(--text-muted);
-            font-size: 0.88rem;
         }
 
-        .vote-count {
+        .vote-badge {
             background: rgba(56, 189, 248, 0.1);
-            border: 1px solid var(--border-glow);
-            color: var(--accent-glow);
-            padding: 6px 16px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: var(--accent-cyan);
+            padding: 8px 18px;
             border-radius: 20px;
             font-weight: 700;
             font-size: 0.95rem;
             box-shadow: 0 0 10px rgba(56, 189, 248, 0.1);
         }
 
-        /* رسالة النجاح التفاعلية */
-        .alert-success {
-            background: rgba(56, 189, 248, 0.08);
-            border: 1px solid var(--border-glow);
-            color: var(--accent-glow);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            display: none;
+        /* رسالة النجاح المنبثقة */
+        .success-alert {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 18px;
+            border-radius: 12px;
             text-align: center;
-            font-weight: 500;
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
+            font-weight: 600;
+            display: none;
+            margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
         }
     </style>
 </head>
 <body>
 
+    <!-- خلفية الغبار المتحرك -->
+    <canvas id="dustCanvas"></canvas>
+
     <header>
-        <h1>مسابقة أهل السنة والجماعة</h1>
-        <p>المنصة الرقمية المتقدمة للتأصيل العلمي والمنافسة المنهجية</p>
+        <div class="logo-badge">الموسوعة الإسلامية والمنافسة المنهجية</div>
+        <h1>منهاج أهل السنة والجماعة</h1>
+        <p>منصة رقمية متقدمة للتأصيل العلمي والموضوعي المستند إلى الأصول الأصيلة</p>
     </header>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('register', event)">تسجيل الطلاب</button>
-        <button class="tab-btn" onclick="switchTab('stages', event)">المراحل والمستويات</button>
+        <button class="tab-btn active" onclick="switchTab('encyclopedia', event)">الموسوعة الموضوعية</button>
+        <button class="tab-btn" onclick="switchTab('register', event)">الاعتماد والمسار</button>
+        <button class="tab-btn" onclick="switchTab('curriculum', event)">المتون والمستويات</button>
         <button class="tab-btn" onclick="switchTab('voting', event)">التصويت التفاعلي</button>
     </div>
 
     <div class="container">
-        
-        <!-- قسم التسجيل -->
-        <div id="register" class="section active">
+
+        <!-- القسم الأول: الموسوعة الإسلامية الموضوعية (مستوحى من المواقع الضخمة) -->
+        <div id="encyclopedia" class="section active">
             <div class="card">
-                <h2 class="section-title">استمارة اعتماد المتسابقين</h2>
-                <div id="successMessage" class="alert-success">تم تسجيل بياناتك بنجاح في السجلات المركزية للمسابقة!</div>
-                <form id="regForm" onsubmit="handleRegistration(event)">
-                    <div class="form-group">
-                        <label for="fullName">الاسم الثلاثي واللقب:</label>
-                        <input type="text" id="fullName" class="form-control" placeholder="أدخل اسمك الثلاثي هنا..." required>
+                <h2 class="section-title">محاور <span>التفسير الموضوعي</span> وعلوم الشريعة</h2>
+                <div class="encyclopedia-grid">
+                    <div class="encyclopedia-item">
+                        <h3>أصالة المنهج العقدي</h3>
+                        <p>دراسة تفصيلية لمفاهيم التوحيد، الاعتقاد السليم، والرد المنهجي على الشبهات المعاصرة وفق أصول السلف.</p>
                     </div>
-                    <div class="form-group">
-                        <label for="stageSelect">المرحلة الدراسية:</label>
-                        <select id="stageSelect" class="form-control">
-                            <option value="المرحلة الإعدادية">المرحلة الإعدادية العامة</option>
-                            <option value="المرحلة الثانوية">المرحلة الثانوية (السادس العلمي والأدبي)</option>
-                            <option value="المرحلة الجامعية">المرحلة الجامعية والأكاديمية</option>
-                        </select>
+                    <div class="encyclopedia-item">
+                        <h3>بلاغة لغة القرآن</h3>
+                        <p>الاستقراء اللغوي والدلالي للألفاظ القرآنية، وبيان وجه الإعجاز البياني في سور التنزيل الحكيم.</p>
                     </div>
-                    <div class="form-group">
-                        <label for="levelSelect">المستوى العلمي في المتون:</label>
-                        <select id="levelSelect" class="form-control">
-                            <option value="المستوى الأول">المستوى الأول (المبتدئ - الأصول الثلاثة والاربعون النووية)</option>
-                            <option value="المستوى الثاني">المستوى الثاني (المتوسط - الواسطية وعمدة الأحكام)</option>
-                            <option value="المستوى المتقدم">المستوى الثالث (المتقدم - التحقيق والتوحيد المقارن)</option>
-                        </select>
+                    <div class="encyclopedia-item">
+                        <h3>علوم السنة والنبوة</h3>
+                        <p>منهج المحدثين في نقد الأحاديث، فقه السيرة النبوية، واستنباط القواعد القيادية والتربوية العطرة.</p>
                     </div>
-                    <button type="submit" class="btn-submit">تأكيد الاعتماد والتسجيل</button>
+                    <div class="encyclopedia-item">
+                        <h3>الفقه المنهجي والنوازل</h3>
+                        <p>تنزيل الأحكام الشرعية على المستجدات العصرية بفقه رصين يجمع بين الأصالة ومرونة الاجتهاد.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- القسم الثاني: نظام التسجيل التفاعلي المتطور (بدل الاستمارة التقليدية) -->
+        <div id="register" class="section">
+            <div class="card">
+                <h2 class="section-title">بوابة الاعتماد والتسجيل <span>الرقمي</span></h2>
+                <div id="successMsg" class="success-alert">تم اعتماد بياناتك في سجلات المنصة المركزية بنجاح تام!</div>
+                
+                <div class="wizard-steps">
+                    <div class="wizard-step active" id="wStep1">
+                        <div class="step-num">1</div>
+                        <p>البيانات الشخصية</p>
+                    </div>
+                    <div class="wizard-step" id="wStep2">
+                        <div class="step-num">2</div>
+                        <p>المسار الأكاديمي</p>
+                    </div>
+                    <div class="wizard-step" id="wStep3">
+                        <div class="step-num">3</div>
+                        <p>المستوى العلمي</p>
+                    </div>
+                </div>
+
+                <form id="advancedForm" onsubmit="completeRegistration(event)">
+                    <!-- الخطوة الأولى -->
+                    <div class="form-step-content active" id="stepContent1">
+                        <div class="form-group">
+                            <label>الاسم الثلاثي واللقب الكريم:</label>
+                            <input type="text" class="form-control" placeholder="أدخل اسمك الكامل هنا..." required>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn-custom btn-primary-custom" onclick="nextStep(2)">التالي</button>
+                        </div>
+                    </div>
+
+                    <!-- الخطوة الثانية -->
+                    <div class="form-step-content" id="stepContent2">
+                        <div class="form-group">
+                            <label>المرحلة الدراسية أو التخصص:</label>
+                            <select class="form-control">
+                                <option>المرحلة الإعدادية / السادس العلمي</option>
+                                <option>المرحلة الثانوية العامة</option>
+                                <option>المرحلة الجامعية والأكاديمية</option>
+                                <option>دراسات حرة وتصيل علمي</option>
+                            </select>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn-custom btn-secondary-custom" onclick="nextStep(1)">السابق</button>
+                            <button type="button" class="btn-custom btn-primary-custom" onclick="nextStep(3)">التالي</button>
+                        </div>
+                    </div>
+
+                    <!-- الخطوة الثالثة -->
+                    <div class="form-step-content" id="stepContent3">
+                        <div class="form-group">
+                            <label>المستوى المنهجي المطلوب:</label>
+                            <select class="form-control">
+                                <option>المستوى الأول (تأصيل المبتدئين - الأصول الثلاثة والنووية)</option>
+                                <option>المستوى الثاني (المتوسط - العقيدة الواسطية وعمدة الأحكام)</option>
+                                <option>المستوى الثالث (المتقدم - التحقيق والتوحيد المقارن)</option>
+                            </select>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn-custom btn-secondary-custom" onclick="nextStep(2)">السابق</button>
+                            <button type="submit" class="btn-custom btn-primary-custom">تأكيد واعتماد التسجيل</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
 
-        <!-- قسم المراحل والمستويات -->
-        <div id="stages" class="section">
+        <!-- القسم الثالث: المتون والمستويات -->
+        <div id="curriculum" class="section">
             <div class="card">
-                <h2 class="section-title">هيكلية المستويات والمسارات العلمية</h2>
-                <div class="grid-cards">
-                    <div class="sub-card">
-                        <h3>المستوى الأول</h3>
-                        <p>تأصيل عقدي أساسي وحفظ المتون القصيرة مع الفهم الإجمالي المستخلص من كتب أهل السنة والجماعة.</p>
+                <h2 class="section-title">هيكلية <span>المتون العلمية</span> المعتمدة</h2>
+                <div class="encyclopedia-grid">
+                    <div class="encyclopedia-item">
+                        <h3>المستوى التأسيسي</h3>
+                        <p>حفظ الأصول الثلاثة، قواعد الإيمان، والأربعين النووية مع شرح المفاهيم الإجمالية.</p>
                     </div>
-                    <div class="sub-card">
-                        <h3>المستوى الثاني</h3>
-                        <p>دراسة متعمقة في العقيدة الواسطية، القواعد الفقهية الكبرى، وتدبر دلالات الأحكام الشرعية.</p>
+                    <div class="encyclopedia-item">
+                        <h3>المستوى المتوسط</h3>
+                        <p>دراسة العقيدة الواسطية، كتاب التوحيد، وعمدة الأحكام في الفقه المقارن.</p>
                     </div>
-                    <div class="sub-card">
-                        <h3>المستوى الثالث</h3>
-                        <p>التحقيق العلمي المتقدم، مقارنة المذاهب العقدية، والردود المنهجية الرصينة على الشبهات المعاصرة.</p>
+                    <div class="encyclopedia-item">
+                        <h3>المستوى التخصصي</h3>
+                        <p>التأصيل المتقدم في أصول الفقه، مصطلح الحديث، والردود المنهجية الرصينة.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- قسم التصويت التفاعلي -->
+        <!-- القسم الرابع: التصويت التفاعلي -->
         <div id="voting" class="section">
             <div class="card">
-                <h2 class="section-title">التصويت التفاعلي المباشر للجمهور</h2>
-                <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.95rem;">انقر على المحور لدعم الخيار وزيادة مؤشر النقاط الحية:</p>
+                <h2 class="section-title">التصويت والتفاعل <span>المنهجي المباشر</span></h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">انقر على المحور لدعم المؤشر وتحديث النقاط الحية فورياً:</p>
                 
-                <div class="vote-item" onclick="vote(this)">
+                <div class="vote-card" onclick="castVote(this, 'v1')">
                     <div class="vote-info">
                         <h4>محور العقيدة والارتباط بالواقع المعاصر</h4>
-                        <p>تفعيل أصول الإيمان في مواجهة التحديات الفكرية الحديثة</p>
+                        <p>تفعيل أصول الإيمان لمواجهة التحديات الفكرية الحديثة</p>
                     </div>
-                    <div class="vote-count" id="v1">324</div>
+                    <div class="vote-badge" id="v1">512</div>
                 </div>
 
-                <div class="vote-item" onclick="vote(this)">
+                <div class="vote-card" onclick="castVote(this, 'v2')">
                     <div class="vote-info">
-                        <h4>محور الفقه المنهجي والنوازل</h4>
-                        <p>تنزيل الأحكام الشرعية على المستجدات والوقائع العصرية</p>
+                        <h4>محور الفقه المنهجي والنوازل العصرية</h4>
+                        <p>تنزيل الأحكام الشرعية على المستجدات والوقائع المعاصرة</p>
                     </div>
-                    <div class="vote-count" id="v2">189</div>
-                </div>
+                    <div class="vote-badge" id="v2">384<<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة المنهاج السني - الموسوعة الإسلامية والمنافسة المنهجية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Amiri:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #040710;
+            --bg-card: #0a0f1d;
+            --bg-card-hover: #10182d;
+            --accent-gold: #d4af37;
+            --accent-cyan: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.15);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-card: rgba(148, 163, 184, 0.08);
+            --border-glow: rgba(212, 175, 55, 0.25);
+        }
 
-                <div class="vote-item" onclick="vote(this)">
-                    <div class="vote-info">
-                        <h4>محور السيرة النبوية والتربية الدعوية</h4>
-                        <p>استنباط المناهج القيادية والتربوية من السيرة العطرة</p>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* خلفية جزيئات الغبار الناعم (Canvas) */
+        #dustCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* الهيدر السينمائي الفاخر */
+        header {
+            text-align: center;
+            padding: 60px 20px 30px;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(to bottom, rgba(4,7,16,0.9), transparent);
+        }
+
+        header .logo-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid var(--border-glow);
+            color: var(--accent-gold);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+
+        header h1 {
+            font-family: 'Amiri', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f8fafc 20%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* شريط التنقل الزجاجي */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(10, 15, 29, 0.85);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-card);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--border-card);
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.92rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn:active {
+            transform: scale(0.95);
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: rgba(56, 189, 248, 0.08);
+            color: var(--accent-cyan);
+            border-color: rgba(56, 189, 248, 0.3);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
+        }
+
+        /* حاوية المحتوى */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* البطاقات الفاخرة */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            opacity: 0.5;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title span {
+            color: var(--accent-gold);
+        }
+
+        /* نظام التسجيل التفاعلي المتقدم (Wizard Steps) */
+        .wizard-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .wizard-step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .wizard-step .step-num {
+            width: 36px;
+            height: 36px;
+            background: #040710;
+            border: 2px solid var(--border-card);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: 700;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .wizard-step.active .step-num {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .wizard-step p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .wizard-step.active p {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .form-step-content {
+            display: none;
+        }
+
+        .form-step-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 18px;
+            background: #040710;
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-custom {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-custom:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--accent-cyan), #2563eb);
+            color: #040710;
+            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-primary-custom:hover {
+            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary-custom {
+            background: transparent;
+            border: 1px solid var(--border-card);
+            color: var(--text-muted);
+        }
+
+        .btn-secondary-custom:hover {
+            border-color: var(--text-muted);
+            color: var(--text-main);
+        }
+
+        /* الموسوعة الإسلامية الموضوعية (أشبه بـ SurahApp) */
+        .encyclopedia-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .encyclopedia-item {
+            background: #040710;
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .encyclopedia-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--border-glow);
+            background: var(--bg-card-hover);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+
+        .encyclopedia-item h3 {
+            color: var(--accent-gold);
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .encyclopedia-item p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* التصويت التفاعلي بنقرات واهتزاز ناعم */
+        .vote-card {
+            background: #040710;
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .vote-card:hover {
+            border-color: var(--accent-cyan);
+            background: var(--bg-card-hover);
+            transform: scale(1.01);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.12);
+        }
+
+        .vote-card:active {
+            transform: scale(0.98);
+        }
+
+        .vote-info h4 {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        .vote-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .vote-badge {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: var(--accent-cyan);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.1);
+        }
+
+        /* رسالة النجاح المنبثقة */
+        .success-alert {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+            margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- خلفية الغبار المتحرك -->
+    <canvas id="dustCanvas"></canvas>
+
+    <header>
+        <div class="logo-badge">الموسوعة الإسلامية والمنافسة المنهجية</div>
+        <h1>منهاج أهل السنة والجماعة</h1>
+        <p>منصة رقمية متقدمة للتأصيل العلمي والموضوعي المستند إلى الأصول الأصيلة</p>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('encyclopedia', event)">الموسوعة الموضوعية</button>
+        <button class="tab-btn" onclick="switchTab('register', event)">الاعتماد والمسار</button>
+        <button class="tab-btn" onclick="switchTab('curriculum', event)">المتون والمستويات</button>
+        <button class="tab-btn" onclick="switchTab('voting', event)">التصويت التفاعلي</button>
+    </div>
+
+    <div class="container">
+
+        <!-- القسم الأول: الموسوعة الإسلامية الموضوعية (مستوحى من المواقع الضخمة) -->
+        <div id="encyclopedia" class="section active">
+            <div class="card">
+                <h2 class="section-title">محاور <span>التفسير الموضوعي</span> وعلوم الشريعة</h2>
+                <div class="encyclopedia-grid">
+                    <div class="encyclopedia-item">
+                        <h3>أصالة المنهج العقدي</h3>
+                        <p>دراسة تفصيلية لمفاهيم التوحيد، الاعتقاد السليم، والرد المنهجي على الشبهات المعاصرة وفق أصول السلف.</p>
                     </div>
-                    <div class="vote-count" id="v3">452</div>
+                    <div class="encyclopedia-item">
+                        <h3>بلاغة لغة القرآن</h3>
+                        <p>الاستقراء اللغوي والدلالي للألفاظ القرآنية، وبيان وجه الإعجاز البياني في سور التنزيل الحكيم.</p>
+                    </div>
+                    <div class="encyclopedia-item">
+                        <h3>علوم السنة والنبوة</h3>
+                        <p>منهج المحدثين في نقد الأحاديث، فقه السيرة النبوية، واستنباط القواعد القيادية والتربوية العطرة.</p>
+                    </div>
+                    <div class="encyclopedia-item">
+                        <h3>الفقه المنهجي والنوازل</h3>
+                        <p>تنزيل الأحكام الشرعية على المستجدات العصرية بفقه رصين يجمع بين الأصالة ومرونة الاجتهاد.</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-    </div>
+        <!-- القسم الثاني: نظام التسجيل التفاعلي المتطور (بدل الاستمارة التقليدية) -->
+        <div id="register" class="section">
+            <div class="card">
+                <h2 class="section-title">بوابة الاعتماد والتسجيل <span>الرقمي</span></h2>
+                <div id="successMsg" class="success-alert">تم اعتماد بياناتك في سجلات المنصة المركزية بنجاح تام!</div>
+                
+                <div class="wizard-steps">
+                    <div class="wizard-step active" id="wStep1">
+                        <div class="step-num">1</div>
+                        <p>البيانات الشخصية</p>
+                    </div>
+                    <div class="wizard-step" id="wStep2">
+                        <div class="step-num">2</div>
+                        <p>المسار الأكاديمي</p>
+                    </div>
+                    <div class="wizard-step" id="wStep3">
+                        <div class="step-num">3</div>
+                        <p>المستوى العلمي</p>
+                    </div>
+                </div>
 
-    <script>
-        function switchTab(sectionId, event) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById(sectionId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
+                <form id="advancedForm" onsubmit="completeRegistration(event)">
+                    <!-- الخطوة الأولى -->
+                    <div class="form-step-content active" id="stepContent1">
+                        <div class="form-group">
+                            <label>الاسم الثلاثي واللقب الكريم:</label>
+                            <input type="text" class="form-control" placeholder="أدخل اسمك الكامل هنا..." required>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn-custom btn-primary-custom" onclick="nextStep(2)">التالي</button>
+                        </div>
+                    </div>
 
-        function handleRegistration(event) {
-            event.preventDefault();
-            const msg = document.getElementById('successMessage');
-            msg.style.display = 'block';
-            document.getElementById('regForm').reset();
-            setTimeout(() => {
-                msg.style.display = 'none';
-            }, 5000);
-        }
+                    <!-- الخطوة الثانية -->
+                    <div class="form-step-content" id="stepContent2">
+                        <div class="form-group">
+                            <label>المرحلة الدراسية أو التخصص:</label>
+                            <select class="form-control">
+                                <option>المرحلة الإعدادية / السادس العلمي</option>
+                                <option>المرحلة الثانوية العامة</option>
+                                <option>المرحلة الجامعية والأكاديمية</option>
+                                <option>دراسات حرة وتصيل علمي</option>
+                            </select>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn-custom btn-secondary-custom" onclick="nextStep(1)">السابق</button>
+                            <button type="button" class="btn-custom btn-primary-custom" onclick="nextStep(3)">التالي</button>
+                        </div>
+                    </div>
 
-        function vote(element) {
-            const countSpan = element.querySelector('.vote-count');
-            let currentCount = parseInt(countSpan.textContent);
-            currentCount++;
-            countSpan.textContent = currentCount;
-            
-            element.style.borderColor = 'var(--accent-glow)';
-            setTimeout(() => {
-                element.style.borderColor = 'var(--border-card)';
-            }, 500);
-        }
-    </script>
-</body>
-    </html>
-    
+                    <!-- الخطوة الثالثة -->
+                    <div class="form-step-content" id="stepContent3">
+                        <div class="form-group">
+                            <label>المستوى المنهجي المطلوب:</label>
+                            <select class="form-control">
+                                <option>المستوى الأول (تأصيل المبتدئين - الأصول الثلاثة والنووية)</option>
+                                <option>المستوى الثاني (المتوسط - العقيدة الواسطية وعمدة الأحكام)</option>
+                                <option>المستوى الثالث (المتقدم - التحقيق والتوحيد المقارن)</option>
+                            </select>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn-custom btn-secondary-custom" onclick="nextStep(2)">السابق</button>
+                            <button type="submit" class="btn-custom btn-primary-custom">تأكيد واعتماد التسجيل</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- القسم الثالث: المتون والمستويات -->
+        <div id="curriculum" class="section">
+            <div class="card">
+                <h2 class="section-title">هيكلية <span>المتون العلمية</span> المعتمدة</h2>
+                <div class="encyclopedia-grid">
+                    <div class="encyclopedia-item">
+                        <h3>المستوى التأسيسي</h3>
+                        <p>حفظ الأصول الثلاثة، قواعد الإيمان، والأربعين النووية مع شرح المفاهيم الإجمالية.</p>
+                    </div>
+                    <div class="encyclopedia-item">
+                        <h3>المستوى المتوسط</h3>
+                        <p>دراسة العقيدة الواسطية، كتاب التوحيد، وعمدة الأحكام في الفقه المقارن.</p>
+                    </div>
+                    <div class="encyclopedia-item">
+                        <h3>المستوى التخصصي</h3>
+                        <p>التأصيل المتقدم في أصول الفقه، مصطلح الحديث، والردود المنهجية الرصينة.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- القسم الرابع: التصويت التفاعلي -->
+        <div id="voting" class="section">
+            <div class="card">
+                <h2 class="section-title">التصويت والتفاعل <span>المنهجي المباشر</span></h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">انقر على المحور لدعم المؤشر وتحديث النقاط الحية فورياً:</p>
+                
+                <div class="vote-card" onclick="castVote(this, 'v1')">
+                    <div class="vote-info">
+                        <h4>محور العقيدة والارتباط بالواقع المعاصر</h4>
+                        <p>تفعيل أصول الإيمان لمواجهة التحديات الفكرية الحديثة</p>
+                    </div>
+                    <div class="vote-badge" id="v1">512</div>
+                </div>
+
+                <div class="vote-card" onclick="castVote(this, 'v2')">
+                    <div class="vote-info">
+                        <h4>محور الفقه المنهجي والنوازل العصرية</h4>
+                        <p>تنزيل الأحكام الشرعية على المستجدات والوقائع المعاصرة</p>
+                    </div>
+                    <div class="vote-badge" id="v2">384</div>
+                </div>
+
+                <div cl
