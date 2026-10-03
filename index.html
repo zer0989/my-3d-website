@@ -3,95 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مسابقة أهل السنة والجماعة - البوابة المركزية</title>
+    <title>مسابقة أهل السنة والجماعة - المنصة المركزية</title>
     <style>
         :root {
-            --bg-primary: #090d16;
-            --bg-card: #111827;
-            --accent-gold: #d4af37;
-            --accent-gold-hover: #e5c158;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --border-color: rgba(212, 175, 55, 0.2);
+            --bg-deep: #060913;
+            --bg-card: #0d1322;
+            --bg-card-hover: #131c31;
+            --accent-glow: #38bdf8;
+            --accent-secondary: #818cf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-glow: rgba(56, 189, 248, 0.25);
+            --border-card: rgba(148, 163, 184, 0.08);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Tahoma', 'Cairo', sans-serif;
+            font-family: 'Cairo', 'Tahoma', sans-serif;
         }
 
         body {
-            background-color: var(--bg-primary);
+            background-color: var(--bg-deep);
             color: var(--text-main);
             min-height: 100vh;
             overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(129, 140, 248, 0.03) 0%, transparent 40%);
         }
 
-        /* الهيدر */
+        /* الهيدر السينمائي */
         header {
             text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(to bottom, #111827, var(--bg-primary));
-            border-bottom: 1px solid var(--border-color);
+            padding: 60px 20px 30px;
+            background: linear-gradient(to bottom, #090e1a, var(--bg-deep));
+            border-bottom: 1px solid var(--border-card);
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
         }
 
         header h1 {
-            font-size: 2.2rem;
-            color: var(--accent-gold);
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f8fafc 30%, var(--accent-glow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 1.05rem;
+            font-size: 1.1rem;
+            font-weight: 300;
         }
 
-        /* شريط التبويب (Navigation Tabs) */
+        /* شريط التنقل الزجاجي (Glassmorphism Tabs) */
         .nav-tabs {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            padding: 20px;
-            background: rgba(17, 24, 39, 0.8);
-            backdrop-filter: blur(10px);
+            gap: 12px;
+            padding: 15px 20px;
+            background: rgba(13, 19, 34, 0.7);
+            backdrop-filter: blur(16px);
             position: sticky;
             top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-card);
         }
 
         .tab-btn {
             background: transparent;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-card);
             color: var(--text-muted);
-            padding: 10px 24px;
-            border-radius: 8px;
+            padding: 10px 22px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .tab-btn.active, .tab-btn:hover {
-            background: var(--accent-gold);
-            color: var(--bg-primary);
-            border-color: var(--accent-gold);
-            font-weight: bold;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            background: rgba(56, 189, 248, 0.08);
+            color: var(--accent-glow);
+            border-color: var(--border-glow);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.12);
+            transform: translateY(-1px);
         }
 
         /* الحاويات الرئيسية */
         .container {
-            max-width: 900px;
+            max-width: 960px;
             margin: 40px auto;
             padding: 0 20px;
         }
 
         .section {
             display: none;
-            animation: fadeIn 0.5s ease-in-out;
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .section.active {
@@ -99,148 +121,193 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* البطاقات والمكونات */
+        /* البطاقات ذات الإشعاع الناعم */
         .card {
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
             margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+            opacity: 0.4;
         }
 
         h2.section-title {
-            color: var(--accent-gold);
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
+            color: var(--text-main);
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* نموذج التسجيل */
+        h2.section-title::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 22px;
+            background: var(--accent-glow);
+            border-radius: 3px;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* نموذج التسجيل الحديث */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: var(--text-main);
+            color: var(--text-muted);
+            font-size: 0.95rem;
             font-weight: 500;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px 16px;
-            background: #090d16;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: white;
+            padding: 14px 18px;
+            background: #060913;
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            color: var(--text-main);
             font-size: 1rem;
             outline: none;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
         }
 
         .form-control:focus {
-            border-color: var(--accent-gold);
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+            background: #090e1a;
         }
 
         .btn-submit {
-            background: var(--accent-gold);
-            color: var(--bg-primary);
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-secondary));
+            color: #060913;
             border: none;
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 8px;
+            padding: 15px 30px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 10px;
             cursor: pointer;
             width: 100%;
-            transition: background 0.3s, transform 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.25);
         }
 
         .btn-submit:hover {
-            background: var(--accent-gold-hover);
             transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.4);
         }
 
-        /* شبكة المراحل والمستويات */
+        /* شبكة المراحل والمستويات الحديثة */
         .grid-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
             gap: 20px;
         }
 
         .sub-card {
-            background: #090d16;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s, border-color 0.3s;
+            background: #060913;
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.35s ease;
+            position: relative;
         }
 
         .sub-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-gold);
+            transform: translateY(-4px);
+            border-color: var(--border-glow);
+            background: var(--bg-card-hover);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(56, 189, 248, 0.05);
         }
 
         .sub-card h3 {
-            color: var(--accent-gold);
-            margin-bottom: 10px;
+            color: var(--accent-glow);
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
         }
 
         .sub-card p {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.92rem;
+            line-height: 1.6;
         }
 
         /* نظام التصويت التفاعلي */
         .vote-item {
-            background: #090d16;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px 20px;
+            background: #060913;
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 18px 22px;
             margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
         }
 
         .vote-item:hover {
-            background: rgba(212, 175, 55, 0.05);
-            border-color: var(--accent-gold);
+            background: var(--bg-card-hover);
+            border-color: var(--border-glow);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.08);
         }
 
         .vote-info h4 {
             color: var(--text-main);
             margin-bottom: 5px;
+            font-size: 1.05rem;
+        }
+
+        .vote-info p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
         }
 
         .vote-count {
-            background: var(--accent-gold);
-            color: var(--bg-primary);
-            padding: 5px 12px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--border-glow);
+            color: var(--accent-glow);
+            padding: 6px 16px;
             border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.1);
         }
 
-        /* رسالة النجاح */
+        /* رسالة النجاح التفاعلية */
         .alert-success {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid #10b981;
-            color: #10b981;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid var(--border-glow);
+            color: var(--accent-glow);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
             display: none;
             text-align: center;
+            font-weight: 500;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
         }
     </style>
 </head>
@@ -248,7 +315,7 @@
 
     <header>
         <h1>مسابقة أهل السنة والجماعة</h1>
-        <p>منصة العلم الشرعي والتنافس المنهجي المعاصر</p>
+        <p>المنصة الرقمية المتقدمة للتأصيل العلمي والمنافسة المنهجية</p>
     </header>
 
     <div class="nav-tabs">
@@ -262,30 +329,30 @@
         <!-- قسم التسجيل -->
         <div id="register" class="section active">
             <div class="card">
-                <h2 class="section-title">استمارة تسجيل المتسابقين</h2>
-                <div id="successMessage" class="alert-success">تم تسجيل طلبك بنجاح في السجلات الرسمية للمسابقة!</div>
+                <h2 class="section-title">استمارة اعتماد المتسابقين</h2>
+                <div id="successMessage" class="alert-success">تم تسجيل بياناتك بنجاح في السجلات المركزية للمسابقة!</div>
                 <form id="regForm" onsubmit="handleRegistration(event)">
                     <div class="form-group">
                         <label for="fullName">الاسم الثلاثي واللقب:</label>
-                        <input type="text" id="fullName" class="form-control" placeholder="أدخل اسمك الكريم..." required>
+                        <input type="text" id="fullName" class="form-control" placeholder="أدخل اسمك الثلاثي هنا..." required>
                     </div>
                     <div class="form-group">
-                        <label for="stageSelect">المرحلة الدراسية / العمرية:</label>
+                        <label for="stageSelect">المرحلة الدراسية:</label>
                         <select id="stageSelect" class="form-control">
-                            <option value="المرحلة الإعدادية">المرحلة الإعدادية</option>
-                            <option value="المرحلة الثانوية">المرحلة الثانوية (السادس علمي / أدبي)</option>
-                            <option value="المرحلة الجامعية">المرحلة الجامعية والعليا</option>
+                            <option value="المرحلة الإعدادية">المرحلة الإعدادية العامة</option>
+                            <option value="المرحلة الثانوية">المرحلة الثانوية (السادس العلمي والأدبي)</option>
+                            <option value="المرحلة الجامعية">المرحلة الجامعية والأكاديمية</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="levelSelect">المستوى العلمي في المتون:</label>
                         <select id="levelSelect" class="form-control">
-                            <option value="المستوى المبتدئ">المستوى الأول (المبتدئ)</option>
-                            <option value="المستوى المتوسط">المستوى الثاني (المتوسط)</option>
-                            <option value="المستوى المتقدم">المستوى الثالث (المتقدم)</option>
+                            <option value="المستوى الأول">المستوى الأول (المبتدئ - الأصول الثلاثة والاربعون النووية)</option>
+                            <option value="المستوى الثاني">المستوى الثاني (المتوسط - الواسطية وعمدة الأحكام)</option>
+                            <option value="المستوى المتقدم">المستوى الثالث (المتقدم - التحقيق والتوحيد المقارن)</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn-submit">تأكيد التسجيل</button>
+                    <button type="submit" class="btn-submit">تأكيد الاعتماد والتسجيل</button>
                 </form>
             </div>
         </div>
@@ -293,19 +360,19 @@
         <!-- قسم المراحل والمستويات -->
         <div id="stages" class="section">
             <div class="card">
-                <h2 class="section-title">هيكلية المراحل والمستويات العلمية</h2>
+                <h2 class="section-title">هيكلية المستويات والمسارات العلمية</h2>
                 <div class="grid-cards">
                     <div class="sub-card">
                         <h3>المستوى الأول</h3>
-                        <p>مخصص لحفظ العقيدة الأساسية والأصول الثلاثة والأربعين النووية مع الفهم الإجمالي.</p>
+                        <p>تأصيل عقدي أساسي وحفظ المتون القصيرة مع الفهم الإجمالي المستخلص من كتب أهل السنة والجماعة.</p>
                     </div>
                     <div class="sub-card">
                         <h3>المستوى الثاني</h3>
-                        <p>دراسة العقيدة الواسطية، عمدة الأحكام، وأصول الفقه الميسر.</p>
+                        <p>دراسة متعمقة في العقيدة الواسطية، القواعد الفقهية الكبرى، وتدبر دلالات الأحكام الشرعية.</p>
                     </div>
                     <div class="sub-card">
                         <h3>المستوى الثالث</h3>
-                        <p>التحقيق العلمي في متون التوحيد، مصطلح الحديث، والمقارنات العقدية المتقدمة.</p>
+                        <p>التحقيق العلمي المتقدم، مقارنة المذاهب العقدية، والردود المنهجية الرصينة على الشبهات المعاصرة.</p>
                     </div>
                 </div>
             </div>
@@ -314,31 +381,31 @@
         <!-- قسم التصويت التفاعلي -->
         <div id="voting" class="section">
             <div class="card">
-                <h2 class="section-title">تصويت الجمهور لاختيار السؤال الأبرز في الحلقة</h2>
-                <p style="color: var(--text-muted); margin-bottom: 20px;">انقر على السؤال لدعم الخيار وزيادة عداد النقاط التفاعلي:</p>
+                <h2 class="section-title">التصويت التفاعلي المباشر للجمهور</h2>
+                <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.95rem;">انقر على المحور لدعم الخيار وزيادة مؤشر النقاط الحية:</p>
                 
                 <div class="vote-item" onclick="vote(this)">
                     <div class="vote-info">
-                        <h4>سؤال أصول الإيمان والتوحيد العملي</h4>
-                        <p>مدى الارتباط بين العقيدة والواقع المعاصر</p>
+                        <h4>محور العقيدة والارتباط بالواقع المعاصر</h4>
+                        <p>تفعيل أصول الإيمان في مواجهة التحديات الفكرية الحديثة</p>
                     </div>
-                    <div class="vote-count" id="v1">142</div>
+                    <div class="vote-count" id="v1">324</div>
                 </div>
 
                 <div class="vote-item" onclick="vote(this)">
                     <div class="vote-info">
-                        <h4>سؤال الفقه المنهجي والتأصيل</h4>
-                        <p>تطبيقات النوازل المعاصرة على المذاهب المعتبرة</p>
+                        <h4>محور الفقه المنهجي والنوازل</h4>
+                        <p>تنزيل الأحكام الشرعية على المستجدات والوقائع العصرية</p>
                     </div>
-                    <div class="vote-count" id="v2">98</div>
+                    <div class="vote-count" id="v2">189</div>
                 </div>
 
                 <div class="vote-item" onclick="vote(this)">
                     <div class="vote-info">
-                        <h4>سؤال السيرة النبوية والدروس التربوية</h4>
-                        <p>استنباط السياسات الشرعية من السيرة العطرة</p>
+                        <h4>محور السيرة النبوية والتربية الدعوية</h4>
+                        <p>استنباط المناهج القيادية والتربوية من السيرة العطرة</p>
                     </div>
-                    <div class="vote-count" id="v3">215</div>
+                    <div class="vote-count" id="v3">452</div>
                 </div>
             </div>
         </div>
@@ -346,7 +413,6 @@
     </div>
 
     <script>
-        // تبديل التبويبات بسلاسة
         function switchTab(sectionId, event) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -355,7 +421,6 @@
             event.currentTarget.classList.add('active');
         }
 
-        // محاكاة إرسال نموذج التسجيل بنجاح
         function handleRegistration(event) {
             event.preventDefault();
             const msg = document.getElementById('successMessage');
@@ -366,20 +431,18 @@
             }, 5000);
         }
 
-        // نظام التصويت التفاعلي بزيادة العداد حياً
         function vote(element) {
             const countSpan = element.querySelector('.vote-count');
             let currentCount = parseInt(countSpan.textContent);
             currentCount++;
             countSpan.textContent = currentCount;
             
-            // تأثير بصري بسيط عند التصويت
-            element.style.borderColor = '#d4af37';
+            element.style.borderColor = 'var(--accent-glow)';
             setTimeout(() => {
-                element.style.borderColor = 'rgba(212, 175, 55, 0.2)';
-            }, 400);
+                element.style.borderColor = 'var(--border-card)';
+            }, 500);
         }
     </script>
 </body>
-                  </html>
-                  
+    </html>
+    
